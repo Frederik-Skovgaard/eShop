@@ -17,7 +17,7 @@ namespace ServiceLayer.Interface
         //Product
         List<Product> GetProductByBrand(string brand);
         List<Product> GetProducts();
-        Product FindById(int id);
+        Product FindProductById(int id);
 
 
         //User
@@ -31,7 +31,7 @@ namespace ServiceLayer.Interface
 
         //Types
         List<Types> GetTypes();
-
+        Types FindTpyeById(int id);
 
     }
 }

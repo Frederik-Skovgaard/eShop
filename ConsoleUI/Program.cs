@@ -6,6 +6,7 @@ using ServiceLayer.Interface;
 using DataLayer.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ConsoleUI
 {
@@ -20,29 +21,40 @@ namespace ConsoleUI
 
         static void Main(string[] args)
         {
-            Menu();
-            string read = Console.ReadLine();
-            Console.Clear();
+            bool isTrue = true;
 
-            switch (read)
+            while (isTrue)
             {
-                default:
-                    break;
-                case "1":
-                    CreateProduct();
-                    break;
-                case "2":
-                    DeleteProduct();
-                    break;
-                case "3":
-                    UpdateProduct();
-                    break;
-                case "4":
-                    GetProducts();
-                    break;
-                case "5":
-                    GetProductsByBrand();
-                    break;
+                Menu();
+                var read = Console.ReadKey();
+                Console.Clear();
+
+                switch (read.Key)
+                {
+                    default:
+                        break;
+                    case ConsoleKey.D1:
+                        CreateProduct();
+                        break;
+                    case ConsoleKey.D2:
+                        DeleteProduct();
+                        break;
+                    case ConsoleKey.D3:
+                        UpdateProduct();
+                        break;
+                    case ConsoleKey.D4:
+                        GetProducts();
+                        break;
+                    case ConsoleKey.D5:
+                        GetProductsByBrand();
+                        break;
+                    case ConsoleKey.D6:
+
+                        break;
+                    case ConsoleKey.D7:
+                        isTrue = false;
+                        break;
+                }
             }
 
         }
@@ -57,29 +69,30 @@ namespace ConsoleUI
             Console.WriteLine("4) Get all products");
             Console.WriteLine("5) Get prodcuts by brand name");
             Console.WriteLine("6) Get all users with specific product in there cart");
+            Console.WriteLine("7) Exit");
             Console.WriteLine("------------------------------------------------------------");
         }
 
         static void CreateProduct()
         {
             Console.WriteLine("\t\t**Create Product**");
-            Console.WriteLine("Productnavn: ");
+            Console.Write("Productnavn: ");
             string name = Console.ReadLine();
 
-            Console.WriteLine("Price: ");
+            Console.Write("Price: ");
             decimal price = Convert.ToDecimal(Console.ReadLine());
 
-            Console.WriteLine("Brand: ");
+            Console.Write("Brand: ");
             string brandName = Console.ReadLine();
 
-            int i = 1;
+            Console.WriteLine("\n");
 
             foreach (var item in repo.GetTypes())
             {
-                Console.WriteLine("Select a type");
-                Console.WriteLine($"{i}) Type: {item.Name}");
-                i++;
+                Console.WriteLine($"TypesId: {item.TypesId}) Type: {item.Name}");
             }
+
+            Console.Write("Select a type: ");
             int type = Convert.ToInt32(Console.ReadLine());
 
 
@@ -91,9 +104,9 @@ namespace ConsoleUI
                 TypesId = type
             };
 
-            repo.AddEntity(product);
+            repo.AddEntity(product);            
 
-            Console.WriteLine($"Product Name: {name} - Brand: {brandName} - Type: {type} - Price: {price} Created");
+            Console.WriteLine($"Product Name: {name} - Brand: {brandName} - Type: {repo.FindTpyeById(type).Name} - Price: {price} Created");
 
             Console.WriteLine("Press Enter to continue...");
             Console.ReadLine();
@@ -105,14 +118,13 @@ namespace ConsoleUI
             Console.WriteLine("\t\t**Delete Product**");
             Console.WriteLine("Select af product to delete");
 
-            int i = 1;
             foreach (var item in repo.GetProducts())
             {
-                Console.WriteLine($"{i}) product: {item.Name} - Brand {item.Brand} - Type: {item.Types.Name} - Price: {item.Price} ");
+                Console.WriteLine($"ProductId: {item.ProductId}) product: {item.Name} - Brand {item.Brand} - Type: {item.Types.Name} - Price: {item.Price} ");
             }
             int id = Convert.ToInt32(Console.ReadLine());
 
-            Product product = repo.FindById(id);
+            Product product = repo.FindProductById(id);
             product.IsDeleted = true;
 
             repo.UpdateEntit(product);
@@ -129,22 +141,21 @@ namespace ConsoleUI
             Console.WriteLine("\t\t**Update Product**");
             Console.WriteLine("Select af product to update");
 
-            int i = 1;
             foreach (var item in repo.GetProducts())
             {
-                Console.WriteLine($"{i}) product: {item.Name} - Brand {item.Brand} - Type: {item.Types.Name} - Price: {item.Price} ");
+                Console.WriteLine($"ProductId: {item.ProductId}) product: {item.Name} - Brand {item.Brand} - Type: {item.Types.Name} - Price: {item.Price} ");
             }
             int id = Convert.ToInt32(Console.ReadLine());
 
-            Product product = repo.FindById(id);
+            Product product = repo.FindProductById(id);
 
-            Console.WriteLine("Productnavn: ");
+            Console.Write("Productnavn: ");
             string name = Console.ReadLine();
 
-            Console.WriteLine("Price: ");
+            Console.Write("Price: ");
             decimal price = Convert.ToDecimal(Console.ReadLine());
 
-            Console.WriteLine("Brand: ");
+            Console.Write("Brand: ");
             string brandName = Console.ReadLine();
 
             string oldName = product.Name;
@@ -166,10 +177,9 @@ namespace ConsoleUI
         {
             Console.WriteLine("\t\t**List of Products**");
 
-            int i = 1;
             foreach (var item in repo.GetProducts())
             {
-                Console.WriteLine($"{i} product: {item.Name} - Brand: {item.Brand} - Type: {item.Types.Name} - Price: {item.Price}");
+                Console.WriteLine($"ProductId: {item.ProductId} product: {item.Name} - Brand: {item.Brand} - Type: {item.Types.Name} - Price: {item.Price}");
             }
 
             Console.WriteLine("Press Enter to continue...");
@@ -180,25 +190,24 @@ namespace ConsoleUI
         static void GetProductsByBrand()
         {
             Console.WriteLine("\t\t**Get Products By Brand**");
-            Console.WriteLine("Type brand name: ");
+            Console.Write("Type brand name: ");
             string brand = Console.ReadLine();
 
             List<Product> list = repo.GetProductByBrand(brand);
 
-            if (list == null)
+            if (list == null) 
             {
                 Console.WriteLine($"Der er ikke noget brand ved navn {brand}");
-
-                foreach (var item in list)
-                {
-                    Console.WriteLine($"\t\t{brand}");
-                    Console.WriteLine($"product: {item.Name} - Price: {item.Price}");
-                }
-
-                Console.WriteLine("Press Enter to continue...");
-                Console.ReadLine();
-                Console.Clear();
             }
+
+            foreach (var item in list)
+            {
+                Console.WriteLine($"ProductId {item.ProductId} - Product: {item.Name} - Price: {item.Price}");
+            }
+
+            Console.WriteLine("Press Enter to continue...");
+            Console.ReadLine();
+            Console.Clear();
         }
     }
 }

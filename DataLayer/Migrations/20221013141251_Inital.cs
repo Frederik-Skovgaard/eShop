@@ -58,8 +58,9 @@ namespace DataLayer.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TypesId = table.Column<int>(type: "int", nullable: false)
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TypesId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -80,6 +81,7 @@ namespace DataLayer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     UserInformationId = table.Column<int>(type: "int", nullable: true),
                     RoleId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -157,23 +159,23 @@ namespace DataLayer.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "ProductId", "Brand", "ImageUrl", "Name", "Price", "TypesId" },
+                columns: new[] { "ProductId", "Brand", "ImageUrl", "IsDeleted", "Name", "Price", "TypesId" },
                 values: new object[,]
                 {
-                    { 1, "Nvida", "~eShop\\DataLayer\\Images", "3080 RTX Nvida", 10099.99m, 2 },
-                    { 2, "Nvida", "~eShop\\DataLayer\\Images", "3090 RTX Nvida", 15999.99m, 2 },
-                    { 3, "LogiTech", "~eShop\\DataLayer\\Images", "LogiTech Meistro Keyboard", 1599.99m, 1 },
-                    { 4, "Asus", "~eShop\\DataLayer\\Images", "Asus Motherboard 3000x", 2599.99m, 4 },
-                    { 5, "AMD", "~eShop\\DataLayer\\Images", "AMD ThredRipper 9999x", 59999.99m, 3 }
+                    { 1, "Nvida", "~eShop\\DataLayer\\Images", false, "3080 RTX Nvida", 10099.99m, 2 },
+                    { 2, "Nvida", "~eShop\\DataLayer\\Images", false, "3090 RTX Nvida", 15999.99m, 2 },
+                    { 3, "LogiTech", "~eShop\\DataLayer\\Images", false, "LogiTech Meistro Keyboard", 1599.99m, 1 },
+                    { 4, "Asus", "~eShop\\DataLayer\\Images", false, "Asus Motherboard 3000x", 2599.99m, 4 },
+                    { 5, "AMD", "~eShop\\DataLayer\\Images", false, "AMD ThredRipper 9999x", 59999.99m, 3 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "Password", "RoleId", "UserInformationId", "UserName" },
+                columns: new[] { "UserId", "IsDeleted", "Password", "RoleId", "UserInformationId", "UserName" },
                 values: new object[,]
                 {
-                    { 1, "P@ssw0rd", 1, 1, "Admin" },
-                    { 3, "kodeord", 3, null, "Benjamin" }
+                    { 1, false, "P@ssw0rd", 1, 1, "Admin" },
+                    { 3, false, "kodeord", 3, null, "Benjamin" }
                 });
 
             migrationBuilder.InsertData(

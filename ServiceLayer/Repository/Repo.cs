@@ -46,12 +46,12 @@ namespace ServiceLayer.Repository
 
         public List<Product> GetProductByBrand(string brand) => _shopContext.Products.Where(x => x.Brand == brand).ToList();
 
-        public List<Product> GetProducts() => _shopContext.Products
+        public List<Product> GetProducts() => _shopContext.Products.Where(x => x.IsDeleted == false)
             .Include(p => p.ProductUsers)
             .ThenInclude(u => u.User)
             .Include(t => t.Types).ToList();
 
-        public Product FindById(int id) => _shopContext.Products.Where(x => x.ProductId == id).FirstOrDefault();
+        public Product FindProductById(int id) => _shopContext.Products.Where(x => x.ProductId == id).FirstOrDefault();
 
 
         #endregion
@@ -61,7 +61,7 @@ namespace ServiceLayer.Repository
         public List<User>
             GetNormalUsers() => _shopContext.Users.Where(x => x.RoleId == 3).ToList();
 
-        public List<User> GetUsers() => _shopContext.Users
+        public List<User> GetUsers() => _shopContext.Users.Where(x => x.IsDeleted == false)
             .Include(r => r.Role)
             .Include(i => i.UserInformation).ToList();
 
@@ -74,6 +74,8 @@ namespace ServiceLayer.Repository
 
         //Types
         public List<Types> GetTypes() => _shopContext.Types.ToList();
+
+        public Types FindTpyeById(int id) => _shopContext.Types.Where(x => x.TypesId == id).FirstOrDefault();
 
     }
 }
