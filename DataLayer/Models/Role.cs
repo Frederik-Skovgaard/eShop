@@ -8,7 +8,9 @@ namespace DataLayer.Models
 {
     public class Role
     {
-        public string RoleId { get; set; }
+        public int RoleId { get; set; }
         public string Name { get; set; }
+
+        public User User { get; set; }
     }
 }
