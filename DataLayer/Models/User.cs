@@ -18,6 +18,7 @@ namespace DataLayer.Models
         public int? UserInformationId { get; set; }
         public int RoleId { get; set; }
 
+        public List<ProductUser> ProductUsers { get; set; }
         public UserInformation UserInformation { get; set; }
         public Role Role { get; set; }
     }

@@ -27,6 +27,7 @@ namespace ConsoleUI
             {
                 Menu();
                 var read = Console.ReadKey();
+
                 Console.Clear();
 
                 switch (read.Key)
@@ -49,7 +50,7 @@ namespace ConsoleUI
                         GetProductsByBrand();
                         break;
                     case ConsoleKey.D6:
-
+                        GetUsersWithProductInCart();
                         break;
                     case ConsoleKey.D7:
                         isTrue = false;
@@ -203,6 +204,31 @@ namespace ConsoleUI
             foreach (var item in list)
             {
                 Console.WriteLine($"ProductId {item.ProductId} - Product: {item.Name} - Price: {item.Price}");
+            }
+
+            Console.WriteLine("Press Enter to continue...");
+            Console.ReadLine();
+            Console.Clear();
+        }
+
+        static void GetUsersWithProductInCart()
+        {
+            Console.WriteLine("\t\t**Get User by product in cart**");
+            Console.WriteLine("Select product");
+
+            foreach (var item in repo.GetProducts())
+            {
+                Console.WriteLine($"ProductId: {item.ProductId} product: {item.Name} - Brand: {item.Brand} - Type: {item.Types.Name} - Price: {item.Price}");
+            }
+
+            int key = Convert.ToInt32(Console.ReadLine());
+
+            foreach (var item in repo.GetUsersWithProductInCart(key))
+            {
+                foreach (var user in item.ProductUsers)
+                {
+                    Console.WriteLine($"Username: {user.User.UserName} Role: {user.User.Role.Name}");
+                }
             }
 
             Console.WriteLine("Press Enter to continue...");

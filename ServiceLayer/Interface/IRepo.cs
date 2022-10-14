@@ -10,6 +10,7 @@ namespace ServiceLayer.Interface
 {
     public interface IRepo
     {
+        //CRUD
         void AddEntity<T>(T entry) where T : class;
         void UpdateEntit<T>(T entry) where T : class;
 
@@ -18,6 +19,7 @@ namespace ServiceLayer.Interface
         List<Product> GetProductByBrand(string brand);
         List<Product> GetProducts();
         Product FindProductById(int id);
+        List<Product> GetUsersWithProductInCart(int id);
 
 
         //User

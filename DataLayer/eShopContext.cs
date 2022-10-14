@@ -61,7 +61,8 @@ namespace DataLayer
 
 
             modelBuilder.Entity<ProductUser>().HasData(
-                new ProductUser { UserId = 1, ProductId = 1, Quantity = 5 });
+                new ProductUser { UserId = 1, ProductId = 1, Quantity = 5 },
+                new ProductUser { UserId = 3, ProductId = 1, Quantity = 5 });
             #endregion
         }
     }

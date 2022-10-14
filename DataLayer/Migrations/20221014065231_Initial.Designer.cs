@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(eShopContext))]
-    [Migration("20221013141251_Inital")]
-    partial class Inital
+    [Migration("20221014065231_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -341,7 +341,7 @@ namespace DataLayer.Migrations
                         .IsRequired();
 
                     b.HasOne("DataLayer.Models.User", "User")
-                        .WithMany()
+                        .WithMany("ProductUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -382,6 +382,11 @@ namespace DataLayer.Migrations
             modelBuilder.Entity("DataLayer.Models.Types", b =>
                 {
                     b.Navigation("products");
+                });
+
+            modelBuilder.Entity("DataLayer.Models.User", b =>
+                {
+                    b.Navigation("ProductUsers");
                 });
 
             modelBuilder.Entity("DataLayer.Models.UserInformation", b =>

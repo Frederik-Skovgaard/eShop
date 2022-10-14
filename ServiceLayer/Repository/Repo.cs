@@ -19,22 +19,13 @@ namespace ServiceLayer.Repository
             _shopContext = new eShopContext();
         }
 
-        /// <summary>
-        /// Adds an entity to database
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="entry"></param>
+        //CRUD
         public void AddEntity<T>(T entry) where T : class
         {
             _shopContext.Add(entry);
             _shopContext.SaveChanges();
         }
 
-        /// <summary>
-        /// Updates an entity in the database
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="entry"></param>
         public void UpdateEntit<T>(T entry) where T : class
         {
             _shopContext.Update(entry);
@@ -53,10 +44,16 @@ namespace ServiceLayer.Repository
 
         public Product FindProductById(int id) => _shopContext.Products.Where(x => x.ProductId == id).FirstOrDefault();
 
+        public List<Product> GetUsersWithProductInCart(int id) => _shopContext.Products.Where(x => x.ProductId == id)
+            .Include(up => up.ProductUsers)
+            .ThenInclude(u => u.User).ToList();
+
 
         #endregion
 
+
         #region User
+
 
         public List<User>
             GetNormalUsers() => _shopContext.Users.Where(x => x.RoleId == 3).ToList();
@@ -65,17 +62,23 @@ namespace ServiceLayer.Repository
             .Include(r => r.Role)
             .Include(i => i.UserInformation).ToList();
 
+
         #endregion
 
 
-        //Role
+        #region Role
+
         public List<Role> GetRoles() => _shopContext.Roles.ToList();
 
+        #endregion
 
-        //Types
+
+        #region Types
+
         public List<Types> GetTypes() => _shopContext.Types.ToList();
 
         public Types FindTpyeById(int id) => _shopContext.Types.Where(x => x.TypesId == id).FirstOrDefault();
 
+        #endregion
     }
 }
