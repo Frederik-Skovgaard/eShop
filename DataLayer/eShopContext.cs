@@ -11,13 +11,20 @@ namespace DataLayer
 {
     public class eShopContext : DbContext
     {
-        public DbSet<Product> Products { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserInformation> UserInformations { get; set; }
-        public DbSet<Types> Types { get; set; }
-        public DbSet<Role> Roles { get; set; }
+        public eShopContext(DbContextOptions<eShopContext> options)
+            : base(options)
+        {
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=eShop;Trusted_Connection=True;");
+        }
+
+        public DbSet<Product>? Products { get; set; }
+        public DbSet<User>? Users { get; set; }
+        public DbSet<ProductUser>? productUsers { get; set; }
+        public DbSet<UserInformation>? UserInformations { get; set; }
+        public DbSet<PaymentMethod>? PaymentMethods { get; set; }
+        public DbSet<Types>? Types { get; set; }
+        public DbSet<Role>? Roles { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,9 +45,9 @@ namespace DataLayer
                 new Role { RoleId = 3, Name = "User" });
 
             modelBuilder.Entity<User>().HasData(
-                new User { UserId = 1, UserName = "Admin", Password = "P@ssw0rd", UserInformationId = 1, RoleId = 1 },
-                new User { UserId = 2, UserName = "Rene", Password = "kodeord", RoleId = 3 },
-                new User { UserId = 3, UserName = "Benjamin", Password = "kodeord", RoleId = 3 });
+                new User { UserId = 1, UserName = "Admin", Password = "P@ssw0rd", Email ="gigga@gmail.com", UserInformationId = 1, RoleId = 1 },
+                new User { UserId = 2, UserName = "Rene", Password = "kodeord", Email = "megaa@gmail.com", RoleId = 3 },
+                new User { UserId = 3, UserName = "Benjamin", Password = "kodeord", Email = "behemoth@gmail.com", RoleId = 3 });
 
             #endregion
 
@@ -53,11 +60,11 @@ namespace DataLayer
 
 
             modelBuilder.Entity<Product>().HasData(
-                new Product { ProductId = 1, Name = "3080 RTX Nvida", Price = 10099.99M, Brand = "Nvida", ImageUrl = @"~eShop\DataLayer\Images", TypesId = 2 },
-                new Product { ProductId = 2, Name = "3090 RTX Nvida", Price = 15999.99M, Brand = "Nvida", ImageUrl = @"~eShop\DataLayer\Images", TypesId = 2 },
-                new Product { ProductId = 3, Name = "LogiTech Meistro Keyboard", Price = 1599.99M, Brand = "LogiTech", ImageUrl = @"~eShop\DataLayer\Images", TypesId = 1 },
-                new Product { ProductId = 4, Name = "Asus Motherboard 3000x", Price = 2599.99M, Brand = "Asus", ImageUrl = @"~eShop\DataLayer\Images", TypesId = 4 },
-                new Product { ProductId = 5, Name = "AMD ThredRipper 9999x", Price = 59999.99M, Brand = "AMD", ImageUrl = @"~eShop\DataLayer\Images", TypesId = 3 });
+                new Product { ProductId = 1, Name = "3080 RTX Nvida", Price = 10099.99M, Brand = "Nvida", ImageUrl = @"Images\EggFace.png", TypesId = 2 },
+                new Product { ProductId = 2, Name = "3090 RTX Nvida", Price = 15999.99M, Brand = "Nvida", ImageUrl = @"Images\DinboyWithGlasses.png", TypesId = 2 },
+                new Product { ProductId = 3, Name = "LogiTech Meistro Keyboard", Price = 1599.99M, Brand = "LogiTech", ImageUrl = @"Images\ducklingFace.png", TypesId = 1 },
+                new Product { ProductId = 4, Name = "Asus Motherboard 3000x", Price = 2599.99M, Brand = "Asus", ImageUrl = @"Images\gundoggo.png", TypesId = 4 },
+                new Product { ProductId = 5, Name = "AMD ThredRipper 9999x", Price = 59999.99M, Brand = "AMD", ImageUrl = @"Images\suitdoggo.png", TypesId = 3 });
 
 
             modelBuilder.Entity<ProductUser>().HasData(

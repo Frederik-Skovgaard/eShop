@@ -1,0 +1,36 @@
+﻿@using DataLayer.Models;
+@model User
+@{
+}
+
+
+<div class="col-sm-6">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="street">Street</label>
+                <input class="form-control" id="street" value="@Model.UserInformation.Street" type="text" readonly>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="city">City</label>
+                <input class="form-control" id="city" value="@Model.UserInformation.City" type="text" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="zip">Zip</label>
+                <input class="form-control" id="zip" value="@Model.UserInformation.ZipCode" type="number" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

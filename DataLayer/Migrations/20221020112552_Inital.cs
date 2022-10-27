@@ -4,7 +4,7 @@
 
 namespace DataLayer.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -162,11 +162,11 @@ namespace DataLayer.Migrations
                 columns: new[] { "ProductId", "Brand", "ImageUrl", "IsDeleted", "Name", "Price", "TypesId" },
                 values: new object[,]
                 {
-                    { 1, "Nvida", "~eShop\\DataLayer\\Images", false, "3080 RTX Nvida", 10099.99m, 2 },
-                    { 2, "Nvida", "~eShop\\DataLayer\\Images", false, "3090 RTX Nvida", 15999.99m, 2 },
-                    { 3, "LogiTech", "~eShop\\DataLayer\\Images", false, "LogiTech Meistro Keyboard", 1599.99m, 1 },
-                    { 4, "Asus", "~eShop\\DataLayer\\Images", false, "Asus Motherboard 3000x", 2599.99m, 4 },
-                    { 5, "AMD", "~eShop\\DataLayer\\Images", false, "AMD ThredRipper 9999x", 59999.99m, 3 }
+                    { 1, "Nvida", "Images\\EggFace.png", false, "3080 RTX Nvida", 10099.99m, 2 },
+                    { 2, "Nvida", "Images\\DinboyWithGlasses.png", false, "3090 RTX Nvida", 15999.99m, 2 },
+                    { 3, "LogiTech", "Images\\ducklingFace.png", false, "LogiTech Meistro Keyboard", 1599.99m, 1 },
+                    { 4, "Asus", "Images\\gundoggo.png", false, "Asus Motherboard 3000x", 2599.99m, 4 },
+                    { 5, "AMD", "Images\\suitdoggo.png", false, "AMD ThredRipper 9999x", 59999.99m, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -182,6 +182,11 @@ namespace DataLayer.Migrations
                 table: "ProductUser",
                 columns: new[] { "ProductId", "UserId", "Quantity" },
                 values: new object[] { 1, 1, 5 });
+
+            migrationBuilder.InsertData(
+                table: "ProductUser",
+                columns: new[] { "ProductId", "UserId", "Quantity" },
+                values: new object[] { 1, 3, 5 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_TypesId",

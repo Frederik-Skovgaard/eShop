@@ -1,0 +1,69 @@
+﻿@page
+@model eShop.Areas.Administrator.Pages.UserModel
+@{
+}
+
+<form method="post">
+    <div class="container Admin">
+        <p class="d-flex">
+            <select class="form-select" asp-for="RoleGenere" asp-items="Model.Genres">
+                <option value="">All</option>
+            </select>
+
+            <input class="form-control" type="text" asp-for="SearchString" />
+            <input class="btn btn-primary menu-item" type="submit" value="Filter" />
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">UserId</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Street</th>
+                    <th scope="col">City</th>
+                    <th scope="col">Zip</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Users)
+                {
+                    <tr>
+                        <th scope="row">@item.UserId</th>
+                        <td>@item.UserName</td>
+                        <td>@item.Email</td>
+                        <td>@item.Role.Name</td>
+                        @if (item.UserInformationId != null)
+                        {
+                            <td>@item.UserInformation.Street</td>
+                            <td>@item.UserInformation.City</td>
+                            <td>@item.UserInformation.ZipCode</td>
+                        }
+                        else
+                        {
+                            <td>Inoformation not disclosed</td>
+                            <td>Inoformation not disclosed</td>
+                            <td>Inoformation not disclosed</td>
+                        }
+                        <td>
+                            <a asp-page="/ProductEdit" class="btn btn-primary">Edit</a> |
+                            <a asp-page="/ViewProdcut" class="btn btn-primary">View</a> |
+                            <input class="btn btn-primary" asp-route-id="@item.UserId" type="submit" asp-page-handler="Delete" value="Delete" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div>
+            <ul class="pagination">
+                @for (var i = 1; i <= Model.totalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a asp-page="" asp-route-currentpage="@i" class="page-link">@i</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</form>

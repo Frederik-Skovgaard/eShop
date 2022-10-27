@@ -22,6 +22,41 @@ namespace DataLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("DataLayer.Models.PaymentMethod", b =>
+                {
+                    b.Property<int>("PaymentMethodId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentMethodId"), 1L, 1);
+
+                    b.Property<int>("AccountNr")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BackNr")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentMethodName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PaymentMethodId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PaymentMethods");
+                });
+
             modelBuilder.Entity("DataLayer.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
@@ -61,7 +96,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 1,
                             Brand = "Nvida",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\EggFace.png",
                             IsDeleted = false,
                             Name = "3080 RTX Nvida",
                             Price = 10099.99m,
@@ -71,7 +106,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 2,
                             Brand = "Nvida",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\DinboyWithGlasses.png",
                             IsDeleted = false,
                             Name = "3090 RTX Nvida",
                             Price = 15999.99m,
@@ -81,7 +116,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 3,
                             Brand = "LogiTech",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\ducklingFace.png",
                             IsDeleted = false,
                             Name = "LogiTech Meistro Keyboard",
                             Price = 1599.99m,
@@ -91,7 +126,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 4,
                             Brand = "Asus",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\gundoggo.png",
                             IsDeleted = false,
                             Name = "Asus Motherboard 3000x",
                             Price = 2599.99m,
@@ -101,7 +136,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 5,
                             Brand = "AMD",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\suitdoggo.png",
                             IsDeleted = false,
                             Name = "AMD ThredRipper 9999x",
                             Price = 59999.99m,
@@ -124,7 +159,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductUser");
+                    b.ToTable("productUsers");
 
                     b.HasData(
                         new
@@ -222,6 +257,9 @@ namespace DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -254,6 +292,7 @@ namespace DataLayer.Migrations
                         new
                         {
                             UserId = 1,
+                            Email = "gigga@gmail.com",
                             IsDeleted = false,
                             Password = "P@ssw0rd",
                             RoleId = 1,
@@ -263,6 +302,7 @@ namespace DataLayer.Migrations
                         new
                         {
                             UserId = 2,
+                            Email = "megaa@gmail.com",
                             IsDeleted = false,
                             Password = "kodeord",
                             RoleId = 3,
@@ -271,6 +311,7 @@ namespace DataLayer.Migrations
                         new
                         {
                             UserId = 3,
+                            Email = "behemoth@gmail.com",
                             IsDeleted = false,
                             Password = "kodeord",
                             RoleId = 3,
@@ -323,6 +364,17 @@ namespace DataLayer.Migrations
                             Street = "Sondsgade 4",
                             ZipCode = 6300
                         });
+                });
+
+            modelBuilder.Entity("DataLayer.Models.PaymentMethod", b =>
+                {
+                    b.HasOne("DataLayer.Models.User", "User")
+                        .WithMany("PaymentMethod")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DataLayer.Models.Product", b =>
@@ -390,6 +442,8 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Models.User", b =>
                 {
+                    b.Navigation("PaymentMethod");
+
                     b.Navigation("ProductUsers");
                 });
 

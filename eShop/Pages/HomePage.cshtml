@@ -1,0 +1,52 @@
+﻿@page
+@model eShop.Areas.Administration.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1>Index</h1>
+
+
+<form method="post" class="ProductIndex">
+    <p class="d-flex">
+        <select class="form-select" asp-for="TypeGenre" asp-items="Model.Genres">
+            <option value="">All</option>
+        </select>
+
+        <input class="form-control" type="text" asp-for="SearchString" />
+        <input class="btn btn-primary menu-item" type="submit" value="Filter" />
+
+        <input asp-page-handler="Order" class="btn btn-primary menu-item" type="submit" value="Order" />
+        <input asp-page-handler="OrderDescending" class="btn btn-primary menu-item" type="submit" value="Order Descending" />
+    </p>
+
+    <div class="container">
+        <div class="row">
+            @foreach (var item in Model.Data.OrderBy(x => x.ProductId))
+            {
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="@item.ImageUrl" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title"><a>@item.Name</a></h5>
+                        <p class="card-text">@item.Price Kr.</p>
+                        <div class="d-flex">
+                            <a asp-route-id="@item.ProductId" asp-page="/Product" class="btn btn-primary">View</a>
+                            <input asp-page-handler="Add" asp-route-id="@item.ProductId" type="submit" class="btn btn-primary" value="Add" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div>
+            <ul class="pagination">
+                @for (var i = 1; i <= Model.totalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a asp-page="" asp-route-currentpage="@i" class="page-link">@i</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</form>
+

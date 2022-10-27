@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(eShopContext))]
-    [Migration("20221014065231_Initial")]
-    partial class Initial
+    [Migration("20221024073836_update2")]
+    partial class update2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -63,7 +63,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 1,
                             Brand = "Nvida",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\EggFace.png",
                             IsDeleted = false,
                             Name = "3080 RTX Nvida",
                             Price = 10099.99m,
@@ -73,7 +73,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 2,
                             Brand = "Nvida",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\DinboyWithGlasses.png",
                             IsDeleted = false,
                             Name = "3090 RTX Nvida",
                             Price = 15999.99m,
@@ -83,7 +83,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 3,
                             Brand = "LogiTech",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\ducklingFace.png",
                             IsDeleted = false,
                             Name = "LogiTech Meistro Keyboard",
                             Price = 1599.99m,
@@ -93,7 +93,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 4,
                             Brand = "Asus",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\gundoggo.png",
                             IsDeleted = false,
                             Name = "Asus Motherboard 3000x",
                             Price = 2599.99m,
@@ -103,7 +103,7 @@ namespace DataLayer.Migrations
                         {
                             ProductId = 5,
                             Brand = "AMD",
-                            ImageUrl = "~eShop\\DataLayer\\Images",
+                            ImageUrl = "Images\\suitdoggo.png",
                             IsDeleted = false,
                             Name = "AMD ThredRipper 9999x",
                             Price = 59999.99m,
@@ -126,12 +126,18 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductUser");
+                    b.ToTable("productUsers");
 
                     b.HasData(
                         new
                         {
                             UserId = 1,
+                            ProductId = 1,
+                            Quantity = 5
+                        },
+                        new
+                        {
+                            UserId = 3,
                             ProductId = 1,
                             Quantity = 5
                         });

@@ -1,0 +1,247 @@
+﻿@page
+@model eShop.Areas.Administrator.Pages.ProductModel
+@{
+}
+
+<form method="post">
+
+    <div class="container Admin">
+        <h1>Products</h1>
+        <p class="d-flex">
+            <select class="form-select" asp-for="TypeGenre" asp-items="Model.Genres">
+                <option value="">All</option>
+            </select>
+
+            <input class="form-control" type="text" asp-for="SearchString" />
+            <input class="btn btn-primary menu-item" type="submit" value="Filter" />
+        </p>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreateProduct">
+            Create
+        </button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ProductId</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <th scope="row">@item.ProductId</th>
+                        <td>@item.Name</td>
+                        <td>@item.Price Kr.</td>
+                        <td>@item.Brand</td>
+                        <td>@item.Types.Name</td>
+                        <td>
+                            <a asp-page="/ProductEdit" class="btn btn-primary">Edit</a> |
+                            <a asp-page="/ViewProduct" class="btn btn-primary">View</a> |
+                            <input class="btn btn-primary" type="submit" asp-route-id="@item.ProductId" asp-page-handler="Delete" value="Delete" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div>
+            <ul class="pagination">
+                @for (var i = 1; i <= Model.totalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a asp-page="" asp-route-currentpage="@i" class="page-link">@i</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</form>
+
+<h1>Types</h1>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreateType">
+    Create
+</button>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">TypeId</th>
+            <th scope="col">Name</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Types)
+        {
+            <tr>
+                <th scope="row">@item.TypesId</th>
+                <td>@item.Name</td>
+                <td>
+                    <a asp-page="/ProductEdit" class="btn btn-primary">Edit</a> |
+                    <a asp-page="/ViewProduct" class="btn btn-primary">View</a> |
+                    <input class="btn btn-primary" type="submit" asp-route-id="@item.TypesId" asp-page-handler="Delete" value="Delete" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<!-- Model Create Product-->
+<form method="post">
+    <div class="modal fade" id="CreateProduct" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="padding">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="name">Name</label>
+                                            <span asp-validation-for="Name"></span>
+                                            <input class="form-control" asp-for="Name" id="name" type="text" placeholder="Enter product name">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="price">Price</label>
+                                            <span asp-validation-for="Price"></span>
+                                            <input class="form-control" asp-for="Price" id="price" type="number" placeholder="Enter product price">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="brad">Brand</label>
+                                            <span asp-validation-for="Brand"></span>
+                                            <input class="form-control" asp-for="Brand" id="brad" type="text" placeholder="Enter product brand">
+                                        </div>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="TypeId"></span>
+                                <div class="row">
+                                    <div class="form-group col-sm-4">
+                                        <label for="type">Type</label>
+                                        <select class="form-control" asp-for="TypeId" id="type">
+                                            @foreach (var item in Model.Types)
+                                            {
+                                                <option value="@item.TypesId">@item.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input class="btn btn-primary" type="submit" asp-page-handler="Create" value="Create" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Model Create Type-->
+<form method="post">
+    <div class="modal fade" id="CreateType" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="padding">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="name">TypeName</label>
+                                            <span asp-validation-for="TypeName"></span>
+                                            <input class="form-control" asp-for="TypeName" id="name" type="text" placeholder="Enter type name">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input class="btn btn-primary" type="submit" asp-page-handler="Create" asp-route-text="Type" value="Create" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Model Edit Product-->
+<form method="post">
+    <div class="modal fade" id="CreateProduct" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="padding">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="name">Name</label>
+                                            <span asp-validation-for="Name"></span>
+                                            <input class="form-control" asp-for="Name" id="name" type="text" placeholder="Enter product name">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="price">Price</label>
+                                            <span asp-validation-for="Price"></span>
+                                            <input class="form-control" asp-for="Price" id="price" type="number" placeholder="Enter product price">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="brad">Brand</label>
+                                            <span asp-validation-for="Brand"></span>
+                                            <input class="form-control" asp-for="Brand" id="brad" type="text" placeholder="Enter product brand">
+                                        </div>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="TypeId"></span>
+                                <div class="row">
+                                    <div class="form-group col-sm-4">
+                                        <label for="type">Type</label>
+                                        <select class="form-control" asp-for="TypeId" id="type">
+                                            @foreach (var item in Model.Types)
+                                            {
+                                                <option value="@item.TypesId">@item.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input class="btn btn-primary" type="submit" asp-page-handler="Update" value="Update" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

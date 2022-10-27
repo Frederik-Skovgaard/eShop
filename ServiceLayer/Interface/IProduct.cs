@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ServiceLayer.Interface
 {
-    public interface IRepo
+    public interface IProduct
     {
         //CRUD
         void AddEntity<T>(T entry) where T : class;
@@ -19,21 +19,10 @@ namespace ServiceLayer.Interface
         List<Product> GetProductByBrand(string brand);
         List<Product> GetProducts();
         Product FindProductById(int id);
-        List<Product> GetUsersWithProductInCart(int id);
 
+        List<Product> GetPaginatedResualt(List<Product> list, int currentPage, int PageSize = 10);
 
-        //User
-        List<User> GetNormalUsers();
-        List<User> GetUsers();
-
-
-        //Role
-        List<Role> GetRoles();
-
-
-        //Types
-        List<Types> GetTypes();
-        Types FindTpyeById(int id);
+        
 
     }
 }

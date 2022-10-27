@@ -13,10 +13,10 @@ namespace ConsoleUI
     class Program
     {
         static ServiceProvider? serviceProvider = new ServiceCollection()
-                .AddSingleton<IRepo, Repo>()
+                .AddSingleton<IService, Service>()
                 .BuildServiceProvider();
 
-        static IRepo? repo = serviceProvider.GetService<IRepo>();
+        static IService? repo = serviceProvider.GetService<IService>();
 
 
         static void Main(string[] args)
@@ -62,8 +62,9 @@ namespace ConsoleUI
 
         static void Menu()
         {
-            Console.WriteLine("------------------------------------------------------------");
+            
             Console.WriteLine("\t\t|**eShop**|");
+            Console.WriteLine("------------------------------------------------------------");
             Console.WriteLine("1) Create product");
             Console.WriteLine("2) Delete product");
             Console.WriteLine("3) Update product");
@@ -90,10 +91,10 @@ namespace ConsoleUI
 
             foreach (var item in repo.GetTypes())
             {
-                Console.WriteLine($"TypesId: {item.TypesId}) Type: {item.Name}");
+                Console.WriteLine($"TypesId: {item.TypesId} Type: {item.Name}");
             }
 
-            Console.Write("Select a type: ");
+            Console.Write("Select a typeId: ");
             int type = Convert.ToInt32(Console.ReadLine());
 
 
@@ -117,12 +118,13 @@ namespace ConsoleUI
         static void DeleteProduct()
         {
             Console.WriteLine("\t\t**Delete Product**");
-            Console.WriteLine("Select af product to delete");
 
             foreach (var item in repo.GetProducts())
             {
                 Console.WriteLine($"ProductId: {item.ProductId}) product: {item.Name} - Brand {item.Brand} - Type: {item.Types.Name} - Price: {item.Price} ");
             }
+            
+            Console.Write("Select productId: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
             Product product = repo.FindProductById(id);
@@ -214,14 +216,15 @@ namespace ConsoleUI
         static void GetUsersWithProductInCart()
         {
             Console.WriteLine("\t\t**Get User by product in cart**");
-            Console.WriteLine("Select product");
 
             foreach (var item in repo.GetProducts())
             {
                 Console.WriteLine($"ProductId: {item.ProductId} product: {item.Name} - Brand: {item.Brand} - Type: {item.Types.Name} - Price: {item.Price}");
             }
-
+            Console.Write("Select product: ");
             int key = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("\n");
 
             foreach (var item in repo.GetUsersWithProductInCart(key))
             {
@@ -230,8 +233,7 @@ namespace ConsoleUI
                     Console.WriteLine($"Username: {user.User.UserName} Role: {user.User.Role.Name}");
                 }
             }
-
-            Console.WriteLine("Press Enter to continue...");
+            Console.WriteLine("\nPress Enter to continue...");
             Console.ReadLine();
             Console.Clear();
         }
