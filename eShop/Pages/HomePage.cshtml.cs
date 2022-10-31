@@ -23,10 +23,15 @@ namespace eShop.Areas.Administration.Pages
         //------------------------------------Properties------------------------------------
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
-        public SelectList? Genres { get; set; }
+
+        public SelectList? GenreType { get; set; }
+        public SelectList? GenreBrand { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public string? TypeGenre { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? BrandGenre { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public int CurrentPage { get; set; } = 1;
@@ -46,9 +51,13 @@ namespace eShop.Areas.Administration.Pages
 
         public void OnGet(bool order)
         {
-            var genreQuery = from m in _Product.GetProducts()
+            var genreType = from m in _Product.GetProducts()
                              orderby m.Name
-                             select m.Name;
+                             select m.Types.Name;
+
+            var genreBrand = from m in _Product.GetProducts()
+                             orderby m.Brand
+                             select m.Brand;
 
             var products = from m in _Product.GetProducts()
                            select m;
@@ -65,8 +74,16 @@ namespace eShop.Areas.Administration.Pages
                 products = products.Where(s => _Type.FindTpyeById(s.TypesId).Name == TypeGenre);
             }
 
-            Genres = new SelectList(genreQuery.Distinct().ToList());
-            var i = order == true ? Data = _Product.GetPaginatedResualt(products.ToList(), CurrentPage, PageSize) : Data = _Product.GetPaginatedResualt(products.ToList(), CurrentPage, PageSize).OrderByDescending(x => x.ProductId).ToList(); ;
+            if (!string.IsNullOrEmpty(BrandGenre))
+            {
+                IsTrue = true;
+                products = products.Where(s => s.Brand == BrandGenre);
+            }
+
+            GenreType = new SelectList(genreType.Distinct().ToList());
+            GenreBrand = new SelectList(genreBrand.Distinct().ToList());
+
+            var i = order == true ? Data = _Product.GetPaginatedResualt(products.ToList(), CurrentPage, PageSize).OrderByDescending(x => x.ProductId).ToList() : Data = _Product.GetPaginatedResualt(products.ToList(), CurrentPage, PageSize).OrderBy(x => x.ProductId).ToList();
             var _ = IsTrue == true ? Count = products.Count() : Count = _Product.GetProducts().Count();
 
             IsTrue = false;
@@ -74,13 +91,13 @@ namespace eShop.Areas.Administration.Pages
 
         public IActionResult OnPostOrder()
         {
-            OnGet(true);
+            OnGet(false);
             return Page();
         }
 
         public IActionResult OnPostOrderDescending()
         {
-            OnGet(false);
+            OnGet(true);
             return Page();
         }
 
@@ -107,8 +124,16 @@ namespace eShop.Areas.Administration.Pages
                 _ProductUser.AddEntity(p);
             }
                 
-            OnGet(true);
+            OnGet(false);
             return Page();
         }
+
+        public IActionResult OnPostFilter()
+        {
+            OnGet(false);
+            return Page();
+        }
+
+
     }
 }

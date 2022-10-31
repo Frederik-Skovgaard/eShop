@@ -9,6 +9,8 @@ namespace ServiceLayer.Interface
 {
     public interface IType
     {
+        void DeleteEntit<T>(T entry) where T : class;
+
         List<Types> GetTypes();
         Types FindTpyeById(int id);
     }

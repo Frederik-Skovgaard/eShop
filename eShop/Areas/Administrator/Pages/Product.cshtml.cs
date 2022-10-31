@@ -12,11 +12,17 @@ namespace eShop.Areas.Administrator.Pages
         private readonly IProduct _Procut;
         private readonly IType _Type;
 
-        public ProductModel(IProduct product, IType type)
+        private Microsoft.AspNetCore.Hosting.IHostingEnvironment _environment;
+
+        public ProductModel(IProduct product, IType type, Microsoft.AspNetCore.Hosting.IHostingEnvironment environment)
         {
             _Procut = product;
             _Type = type;
+            _environment = environment;
         }
+
+        [BindProperty]
+        public IFormFile Upload { get; set; }
 
         //---------------------Collection Properties---------------------
 
@@ -96,16 +102,23 @@ namespace eShop.Areas.Administrator.Pages
             return Page();
         }
 
-        public IActionResult OnPostCreate(string text)
+        public async Task<IActionResult> OnPostCreate(string text)
         {
             if (text != "Type")
             {
+                var file = Path.Combine(_environment.ContentRootPath, "wwwroot\\Images", Upload.FileName);
+                using (var fileStream = new FileStream(file, FileMode.Create))
+                {
+                    await Upload.CopyToAsync(fileStream);
+                }
+
                 Product p = new()
                 {
                     Name = Name,
                     Price = Price,
                     Brand = Brand,
-                    TypesId = TypeId
+                    TypesId = TypeId,
+                    ImageUrl = $"Images/{Upload.FileName}"
                 };
                 _Procut.AddEntity(p);
             }
@@ -116,7 +129,7 @@ namespace eShop.Areas.Administrator.Pages
                     Name = TypeName
                 };
                 _Procut.AddEntity(p);
-            }       
+            }
 
             Types = _Type.GetTypes();
             Products = _Procut.GetProducts();
@@ -132,6 +145,23 @@ namespace eShop.Areas.Administrator.Pages
 
             Types = _Type.GetTypes();
             Products = _Procut.GetProducts();
+            return Page();
+        }
+
+        public IActionResult OnPostDeleteType(int id)
+        {
+            Types t = _Type.FindTpyeById(id);
+
+            _Type.DeleteEntit(t);
+
+            Types = _Type.GetTypes();
+            Products = _Procut.GetProducts();
+            return Page();
+        }
+
+        public IActionResult OnPostFilter()
+        {
+            OnGet();
             return Page();
         }
     }

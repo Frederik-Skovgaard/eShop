@@ -4,6 +4,7 @@ using DataLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(eShopContext))]
-    partial class eShopContextModelSnapshot : ModelSnapshot
+    [Migration("20221027173827_update23")]
+    partial class update23
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,24 +50,14 @@ namespace DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PaymentMethodId");
-
-                    b.ToTable("PaymentMethods");
-                });
-
-            modelBuilder.Entity("DataLayer.Models.PaymentMethodUser", b =>
-                {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PaymentMethodId")
-                        .HasColumnType("int");
+                    b.HasKey("PaymentMethodId");
 
-                    b.HasKey("UserId", "PaymentMethodId");
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("PaymentMethodId");
-
-                    b.ToTable("PaymentMethodUsers");
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("DataLayer.Models.Product", b =>
@@ -376,21 +368,13 @@ namespace DataLayer.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DataLayer.Models.PaymentMethodUser", b =>
+            modelBuilder.Entity("DataLayer.Models.PaymentMethod", b =>
                 {
-                    b.HasOne("DataLayer.Models.PaymentMethod", "PaymentMethod")
-                        .WithMany("PaymentMethodUsers")
-                        .HasForeignKey("PaymentMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DataLayer.Models.User", "User")
                         .WithMany("PaymentMethod")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("PaymentMethod");
 
                     b.Navigation("User");
                 });
@@ -440,11 +424,6 @@ namespace DataLayer.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("UserInformation");
-                });
-
-            modelBuilder.Entity("DataLayer.Models.PaymentMethod", b =>
-                {
-                    b.Navigation("PaymentMethodUsers");
                 });
 
             modelBuilder.Entity("DataLayer.Models.Product", b =>

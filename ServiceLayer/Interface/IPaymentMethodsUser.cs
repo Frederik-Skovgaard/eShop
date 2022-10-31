@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace ServiceLayer.Interface
 {
-    public interface IRole
+    public interface IPaymentMethodsUser
     {
-        void DeleteEntit<T>(T entry) where T : class;
-
-        List<Role> GetRoles();
-        Role GetRoleById(int id);
+        List<PaymentMethodUser> GetPaymentMethods(int id);
     }
 }

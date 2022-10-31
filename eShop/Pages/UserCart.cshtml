@@ -58,10 +58,11 @@
                         <div class="row">
                             @if (Model.PaymentMethods.Count != 0)
                             {
+                                <h1>Payment</h1>
                                 <select class="form-select">
                                     @foreach (var item in Model.PaymentMethods)
                                     {
-                                        <option value="@item.PaymentMethodId">@item.PaymentMethodName</option>
+                                        <option value="@item.PaymentMethodId">@item.PaymentMethod.Name</option>
                                     }
                                 </select>
                             }
@@ -95,7 +96,7 @@
                                                 <label for="ccnumber">Credit Card Number</label>
                                                 <div class="input-group">
                                                     <span asp-validation-for="CreditNr"></span>
-                                                    <input class="form-control" asp-for="CreditNr" type="text" placeholder="0000 0000 0000 0000" autocomplete="email">
+                                                    <input class="form-control" asp-for="CreditNr" type="text" onkeypress="@Model.NummbersOnly" placeholder="0000 0000 0000 0000" autocomplete="email">
                                                 </div>
                                             </div>
                                         </div>
@@ -170,7 +171,7 @@
                                             <div class="form-group">
                                                 <label for="zip">Zip</label>
                                                 <span asp-validation-for="Zip"></span>
-                                                <input class="form-control" asp-for="Zip" id="zip" type="number" placeholder="Enter zip code">
+                                                <input class="form-control" asp-for="Zip" id="zip" type="text" onkeypress="@Model.NummbersOnly" placeholder="Enter zip code">
                                             </div>
                                         </div>
                                     </div>
@@ -181,7 +182,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Buy!</button>
+                    <input value="Buy!" type="submit" asp-page-handler="CheckOut" class="btn btn-primary" />
                 </div>
             </div>
         </div>

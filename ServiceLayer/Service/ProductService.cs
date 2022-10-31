@@ -39,8 +39,8 @@ namespace ServiceLayer.Repository
             .ThenInclude(u => u.User)
             .Include(t => t.Types).ToList();
 
-        public Product FindProductById(int id) => _shopContext.Products
-            .Where(x => x.ProductId == id).FirstOrDefault();
+        public Product FindProductById(int id) => _shopContext.Products.Where(x => x.ProductId == id)
+            .Include(x => x.Types).FirstOrDefault();
 
         public List<Product> GetPaginatedResualt(List<Product> list, int currentPage, int PageSize = 10) => list
             .OrderBy(d => d.ProductId)

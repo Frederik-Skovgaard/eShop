@@ -2,6 +2,7 @@ using DataLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ServiceLayer.Interface;
+using ServiceLayer.Service;
 using System.ComponentModel.DataAnnotations;
 
 namespace eShop.Pages
@@ -10,17 +11,28 @@ namespace eShop.Pages
     {
         private readonly IProductUser _ProductUser;
         private readonly IUser _User;
+        private readonly IPaymentMethodsUser _PaymentMethodUser;
         private readonly IPaymentMethod _PaymentMethod;
 
-        public UserCartModel(IProductUser productUser, IPaymentMethod paymentMethod, IUser user)
+        private readonly IMail _Mail;
+
+        public UserCartModel(IProductUser productUser, IPaymentMethodsUser paymentMethodsUser, IUser user, IPaymentMethod paymentMethod, IMail mail)
         {
             _ProductUser = productUser;
             _PaymentMethod = paymentMethod;
             _User = user;
+            _PaymentMethod = paymentMethod;
+            _PaymentMethodUser = paymentMethodsUser;
+            _Mail = mail;
         }
 
 
+        [BindProperty]
+        public string NummbersOnly { get; set; } = "return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57));";
+
+
         //---------------------List porperties---------------------
+
         [BindProperty]
         public List<ProductUser> Products { get; set; }
 
@@ -28,7 +40,7 @@ namespace eShop.Pages
         public List<int> Quantitys { get; set; } = new List<int>();
 
         [BindProperty]
-        public List<PaymentMethod> PaymentMethods { get; set; }
+        public List<PaymentMethodUser> PaymentMethods { get; set; }
 
         //---------------------Properties for payment method---------------------
         [BindProperty, Required]
@@ -38,15 +50,15 @@ namespace eShop.Pages
         public string Name { get; set; }
 
         [BindProperty, Required, MaxLength(19), MinLength(16, ErrorMessage = "Must be atlest 16 digits long")]
-        public int CreditNr { get; set; }
+        public string CreditNr { get; set; }
 
-        [BindProperty, Required, MaxLength(2)]
+        [BindProperty, Required]
         public int Month { get; set; }
 
-        [BindProperty, Required, MaxLength(4)]
+        [BindProperty, Required]
         public int Year { get; set; }
 
-        [BindProperty, Required, MaxLength(4), MinLength(3, ErrorMessage = "Must be atlest 3 digits long")]
+        [BindProperty, Required]
         public int CVV { get; set; }
 
         //---------------------UserInformation properties---------------------
@@ -74,7 +86,7 @@ namespace eShop.Pages
                 Quantitys.Add(item.Quantity);
             }
 
-            PaymentMethods = _PaymentMethod.GetPaymentMethods(id);
+            PaymentMethods = _PaymentMethodUser.GetPaymentMethods(id);
             User = _User.GetUser(id);
         }
 
@@ -94,7 +106,7 @@ namespace eShop.Pages
                     break;
                 }
 
-                if (prob.Quantity !<= 0) _ProductUser.UpdateEntit(prob); else _ProductUser.DeleteEntit(prob);
+                if (prob.Quantity <= 0) _ProductUser.DeleteEntit(prob); else  _ProductUser.UpdateEntit(prob);
             }
 
             OnGet(id);
@@ -122,33 +134,50 @@ namespace eShop.Pages
             int userId = (int)HttpContext.Session.GetInt32("id");
             OnGet(userId);
 
-            if (User.PaymentMethod.Count != 0)
+            if (User.PaymentMethod == null)
             {
                 PaymentMethod payment = new()
                 {
                     PaymentMethodName = PaymentName,
                     Name = Name,
                     AccountNr = CreditNr,
-                    BackNr = CVV,
+                    BackNr = Convert.ToInt32(CVV),
                     ExpirationDate = DateTime.Parse(date)
                 };
 
-                _PaymentMethod.AddEntity(payment);
+                _User.AddEntity(payment);
+
+                var p = _PaymentMethod.GetPaymentMethod(Name, CreditNr);
+
+                PaymentMethodUser payUser = new()
+                {
+                    PaymentMethodId = p.PaymentMethodId,
+                    UserId = userId
+                };
+
+                _User.AddEntity(payUser);                
             }
-            if (User.UserInformationId != null)
+
+
+            if (User.UserInformationId == null)
             {
                 UserInformation user = new()
                 {
                     Street = Street,
                     City = City,
-                    ZipCode = Zip
+                    ZipCode = Convert.ToInt32(Zip)
                 };
 
                 _ProductUser.AddEntity(user);
             }
 
+            foreach (var item in _ProductUser.GetProductcart(userId))
+            {
+                _ProductUser.DeleteEntit(item);
+            }
 
-            
+            _Mail.SendCheck("frederik.skovgaard@gmail.com");
+
             return RedirectToPage("/Success");
         }
     }

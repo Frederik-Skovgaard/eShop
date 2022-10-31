@@ -2,6 +2,7 @@ using DataLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using ServiceLayer.Interface;
 using ServiceLayer.Repository;
 using ServiceLayer.Service;
@@ -29,10 +30,13 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IProduct, ProductService>();
 builder.Services.AddScoped<IProductUser, ProductuserService>();
 builder.Services.AddScoped<IPaymentMethod, PaymentService>();
+builder.Services.AddScoped<IPaymentMethodsUser, PaymentMethoUser>();
 builder.Services.AddScoped<IRole, RoleService>();
 builder.Services.AddScoped<IType, TypeService>();
 builder.Services.AddScoped<IUser, UserService>();
 builder.Services.AddScoped<IUserInfo, UserInfoService>();
+
+builder.Services.AddScoped<IMail, MailService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +46,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

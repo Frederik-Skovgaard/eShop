@@ -21,6 +21,7 @@ namespace DataLayer
         public DbSet<User>? Users { get; set; }
         public DbSet<ProductUser>? productUsers { get; set; }
         public DbSet<UserInformation>? UserInformations { get; set; }
+        public DbSet<PaymentMethodUser>? PaymentMethodUsers { get; set; }
         public DbSet<PaymentMethod>? PaymentMethods { get; set; }
         public DbSet<Types>? Types { get; set; }
         public DbSet<Role>? Roles { get; set; }
@@ -29,6 +30,7 @@ namespace DataLayer
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProductUser>().HasKey(e => new { e.UserId, e.ProductId });
+            modelBuilder.Entity<PaymentMethodUser>().HasKey(e => new { e.UserId, e.PaymentMethodId });
 
             modelBuilder.Entity<Product>().Property(p => p.Price)
                .HasColumnType("decimal(18,2)");

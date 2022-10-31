@@ -11,12 +11,10 @@ namespace DataLayer.Models
         public int PaymentMethodId { get; set; }
         public string PaymentMethodName { get; set; }
         public string Name { get; set; }
-        public int AccountNr { get; set; }
+        public string AccountNr { get; set; }
         public DateTime ExpirationDate { get; set; }
         public int BackNr { get; set; }
 
-        public int UserId { get; set; }
-
-        public User User { get; set; }
+        public List<PaymentMethodUser> PaymentMethodUsers { get; set; }
     }
 }

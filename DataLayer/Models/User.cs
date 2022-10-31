@@ -21,7 +21,7 @@ namespace DataLayer.Models
         public int RoleId { get; set; }
 
         public List<ProductUser> ProductUsers { get; set; }
-        public List<PaymentMethod> PaymentMethod { get; set; }
+        public List<PaymentMethodUser> PaymentMethod { get; set; }
 
         public UserInformation UserInformation { get; set; }
         public Role Role { get; set; }

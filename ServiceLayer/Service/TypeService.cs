@@ -18,6 +18,12 @@ namespace ServiceLayer.Service
             _shopContext = eShopContext;
         }
 
+        public void DeleteEntit<T>(T entry) where T : class
+        {
+            _shopContext.Remove(entry);
+            _shopContext.SaveChanges();
+        }
+
         public List<Types> GetTypes() => _shopContext.Types.ToList();
 
         public Types FindTpyeById(int id) => _shopContext.Types.Where(x => x.TypesId == id).FirstOrDefault();

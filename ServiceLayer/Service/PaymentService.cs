@@ -30,7 +30,7 @@ namespace ServiceLayer.Service
             _shopContext.SaveChanges();
         }
 
-        public List<PaymentMethod> GetPaymentMethods(int id) => _shopContext.PaymentMethods.Where(x => x.UserId == id).ToList();
+        public PaymentMethod GetPaymentMethod(string name, string account) => _shopContext.PaymentMethods.Where(x => x.Name == name && x.AccountNr == account).FirstOrDefault();
 
     }
 }

@@ -19,6 +19,12 @@ namespace ServiceLayer.Service
             _shopContext = eShopContext;
         }
 
+        public void DeleteEntit<T>(T entry) where T : class
+        {
+            _shopContext.Remove(entry);
+            _shopContext.SaveChanges();
+        }
+
         public List<Role> GetRoles() => _shopContext.Roles.ToList();
 
         public Role GetRoleById(int id) => _shopContext.Roles.Where(x => x.RoleId == id).FirstOrDefault();

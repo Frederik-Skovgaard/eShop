@@ -13,6 +13,6 @@ namespace ServiceLayer.Interface
         void AddEntity<T>(T entry) where T : class;
         void UpdateEntit<T>(T entry) where T : class;
 
-        List<PaymentMethod> GetPaymentMethods(int id);
+        PaymentMethod GetPaymentMethod(string name, string account);
     }
 }
