@@ -22,7 +22,7 @@ namespace ServiceLayer.Interface
 
         List<Product> GetPaginatedResualt(List<Product> list, int currentPage, int PageSize = 10);
 
-        
 
+        List<Product> GetProductAPI();
     }
 }

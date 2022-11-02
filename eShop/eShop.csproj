@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="bundleconfig.json" />
     <Content Remove="wwwroot\Images\EggFace.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bundleconfig.json" />
     <None Include="wwwroot\Images\EggFace.png" />
   </ItemGroup>
 

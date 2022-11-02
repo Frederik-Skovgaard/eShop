@@ -20,7 +20,7 @@ namespace DataLayer.Models
 
         public bool IsDeleted { get; set; } = false;
 
-        public List<ProductUser> ProductUsers { get; set; }
-        public Types Types { get; set; }
+        public List<ProductUser>? ProductUsers { get; set; }
+        public Types? Types { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(eShopContext))]
-    [Migration("20221027180021_Changes")]
-    partial class Changes
+    [Migration("20221031135327_anotherOne")]
+    partial class anotherOne
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

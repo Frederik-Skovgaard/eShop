@@ -1,13 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace DataLayer.Migrations
 {
-    public partial class Inital : Migration
+    public partial class anotherOne : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "PaymentMethods",
+                columns: table => new
+                {
+                    PaymentMethodId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PaymentMethodName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccountNr = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BackNr = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentMethods", x => x.PaymentMethodId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -81,6 +99,7 @@ namespace DataLayer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     UserInformationId = table.Column<int>(type: "int", nullable: true),
                     RoleId = table.Column<int>(type: "int", nullable: false)
@@ -102,7 +121,31 @@ namespace DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductUser",
+                name: "PaymentMethodUsers",
+                columns: table => new
+                {
+                    PaymentMethodId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentMethodUsers", x => new { x.UserId, x.PaymentMethodId });
+                    table.ForeignKey(
+                        name: "FK_PaymentMethodUsers_PaymentMethods_PaymentMethodId",
+                        column: x => x.PaymentMethodId,
+                        principalTable: "PaymentMethods",
+                        principalColumn: "PaymentMethodId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PaymentMethodUsers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "productUsers",
                 columns: table => new
                 {
                     ProductId = table.Column<int>(type: "int", nullable: false),
@@ -111,15 +154,15 @@ namespace DataLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductUser", x => new { x.UserId, x.ProductId });
+                    table.PrimaryKey("PK_productUsers", x => new { x.UserId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_ProductUser_Products_ProductId",
+                        name: "FK_productUsers_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductUser_Users_UserId",
+                        name: "FK_productUsers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -171,22 +214,28 @@ namespace DataLayer.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "IsDeleted", "Password", "RoleId", "UserInformationId", "UserName" },
+                columns: new[] { "UserId", "Email", "IsDeleted", "Password", "RoleId", "UserInformationId", "UserName" },
                 values: new object[,]
                 {
-                    { 1, false, "P@ssw0rd", 1, 1, "Admin" },
-                    { 3, false, "kodeord", 3, null, "Benjamin" }
+                    { 1, "gigga@gmail.com", false, "P@ssw0rd", 1, 1, "Admin" },
+                    { 2, "megaa@gmail.com", false, "kodeord", 3, null, "Rene" },
+                    { 3, "behemoth@gmail.com", false, "kodeord", 3, null, "Benjamin" }
                 });
 
             migrationBuilder.InsertData(
-                table: "ProductUser",
+                table: "productUsers",
                 columns: new[] { "ProductId", "UserId", "Quantity" },
                 values: new object[] { 1, 1, 5 });
 
             migrationBuilder.InsertData(
-                table: "ProductUser",
+                table: "productUsers",
                 columns: new[] { "ProductId", "UserId", "Quantity" },
                 values: new object[] { 1, 3, 5 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentMethodUsers_PaymentMethodId",
+                table: "PaymentMethodUsers",
+                column: "PaymentMethodId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_TypesId",
@@ -194,15 +243,14 @@ namespace DataLayer.Migrations
                 column: "TypesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductUser_ProductId",
-                table: "ProductUser",
+                name: "IX_productUsers_ProductId",
+                table: "productUsers",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
-                column: "RoleId",
-                unique: true);
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_UserInformationId",
@@ -215,7 +263,13 @@ namespace DataLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ProductUser");
+                name: "PaymentMethodUsers");
+
+            migrationBuilder.DropTable(
+                name: "productUsers");
+
+            migrationBuilder.DropTable(
+                name: "PaymentMethods");
 
             migrationBuilder.DropTable(
                 name: "Products");

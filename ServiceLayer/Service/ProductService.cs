@@ -46,5 +46,7 @@ namespace ServiceLayer.Repository
             .OrderBy(d => d.ProductId)
             .Skip((currentPage - 1) * PageSize)
             .Take(PageSize).ToList();
+
+        public List<Product> GetProductAPI() => _shopContext.Products.Where(x => x.IsDeleted == false).ToList();
     }
 }
