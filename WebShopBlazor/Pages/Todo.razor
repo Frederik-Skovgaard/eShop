@@ -1,0 +1,78 @@
+﻿@page "/Todo"
+@using Microsoft.Extensions.Logging
+@inject ILogger<Index> _Logger
+<h3>Todo</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Check</th>
+            <th scope="col">Description</th>
+            <th scope="col">Handle</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in todoItems)
+        {
+            <tr>
+                <td><input type="checkbox" value="@item.IsChecked" class="form-check" /></td>
+                <td>@item.Description</td>
+                <td>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                       Rediger
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<EditForm Model="@todoItem" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <InputText id="Description" @bind-Value="todoItem.Description" />
+    <ValidationMessage For="() => todoItem.Description" />
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private List<TodoItem> todoItems = new List<TodoItem>();
+    private TodoItem todoItem = new();
+
+    private void HandleValidSubmit()
+    {
+        _Logger.LogInformation("HandleValidSubmit called");
+        if (todoItems.Count != 0)
+        {
+            todoItem.Id = todoItems.Last().Id + 1;
+        }
+        else { todoItem.Id++; }
+
+        todoItems.Add(todoItem);
+        todoItem = new();
+    }
+}

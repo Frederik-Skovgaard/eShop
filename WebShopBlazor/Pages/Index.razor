@@ -1,0 +1,34 @@
+﻿@page "/"
+@using Microsoft.Extensions.Logging
+@inject ILogger<Index> _Logger
+
+<PageTitle>Index</PageTitle>
+
+<EditForm Model="@exmapleModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <InputText id="FirstName" @bind-Value="exmapleModel.FirstName" />
+    <ValidationMessage For="() => exmapleModel.FirstName" />
+    <InputText id="LastName" @bind-Value="exmapleModel.LastName" />
+    <ValidationMessage For="() => exmapleModel.LastName" />
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+<label>@FirstName</label>
+<label>@LastName</label>
+
+@code {
+    private ExampleModel exmapleModel = new();
+
+    private string FirstName { get; set; }
+    private string LastName { get; set; }
+
+    private void HandleValidSubmit() {
+        _Logger.LogInformation("HandleValidSubmit called");
+
+        FirstName = exmapleModel.FirstName;
+        LastName = exmapleModel.LastName;
+    }
+}
