@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 
-namespace BlazorApp1.Services
+namespace WebShop.Services
 {
     public class ProductService
     {

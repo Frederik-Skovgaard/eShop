@@ -1,21 +1,22 @@
-using DataLayer;
 using Microsoft.EntityFrameworkCore;
-using ServiceLayer.Interface;
-using ServiceLayer.Repository;
 using Microsoft.OpenApi.Models;
 using System.Security.Policy;
 using System.Reflection;
 using eShopAPI.Formatters;
+using ServiceLayer.Interface;
+using ServiceLayer.Service;
+using DataLayer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the containe>
 builder.Services.AddScoped<IProduct, ProductService>();
+builder.Services.AddScoped<IType, TypeService>();
 
 builder.Services.AddControllers(options =>
 {
-    options.InputFormatters.Insert(0, new VcardInputFormatter());
-    options.OutputFormatters.Insert(0, new VcardOutputFormatter());
+    //options.InputFormatters.Insert(0, new VcardInputFormatter());
+    //options.OutputFormatters.Insert(0, new VcardOutputFormatter());
 });
 
 builder.Services.AddDbContext<eShopContext>(option =>
@@ -50,13 +51,26 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseWebAssemblyDebugging();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+
+    app.UseHsts();
 }
 
+app.UseBlazorFrameworkFiles();
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

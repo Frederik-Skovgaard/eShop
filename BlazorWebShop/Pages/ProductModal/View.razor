@@ -1,0 +1,18 @@
+﻿<label>Name</label>
+<p>@Item.Name</p>
+
+<br />
+<label>Price</label>
+<p>@Item.Price</p>
+
+<br />
+<label>Brand</label>
+<p>@Item.Brand</p>
+
+<br />
+<label>Type</label>
+<p>@Item.TypesId</p>
+
+@code {
+    [Parameter] public Product Item { get; set; }
+}

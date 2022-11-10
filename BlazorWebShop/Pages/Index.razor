@@ -1,0 +1,79 @@
+﻿@page "/"
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@inject BlazorWebShop.Services.IProductAPI _ProductApi
+@inject IToastService toastService
+
+<PageTitle>Products</PageTitle>
+
+
+<div class="ProductIndex">
+    <button class="btn btn-lg btn-primary" @onclick="@Create">Create</button>
+    <div class="container">
+        <div class="row">
+            @if (Products != null)
+            {
+                @foreach (var item in Products)
+                {
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="@item.ImageUrl" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title"><a>@item.Name</a></h5>
+                            <p class="card-text">@item.Price Kr.</p>
+                            <div class="d-flex">
+                                <button class=" btn btn-primary" @onclick="(() => View(item))">View</button>
+                                <button class=" btn btn-primary" @onclick="(() => Edit(item.ProductId, item.Name))">Edit</button>
+                                <button class=" btn btn-primary" @onclick="(() => Delete(item.ProductId))">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+
+
+    public List<Product>? Products { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await _ProductApi.GetProductsAsync();
+    }
+
+    protected async Task Edit(int id, string name){
+        ModalParameters parameter = new();
+
+        parameter.Add(nameof(ProductModal.Edit.ID), id);
+
+        var modal = Modal.Show<ProductModal.Edit>($"Edit {name}", parameter);
+        await modal.Result;
+        await OnInitializedAsync();
+    }
+
+    protected async Task View(Product item) {
+        ModalParameters parameter = new();
+
+        parameter.Add(nameof(ProductModal.View.Item), item);
+
+        var modal = Modal.Show<ProductModal.View>($"View {item.Name}", parameter);
+        await modal.Result;
+    }
+
+    protected async Task Create() {
+        var modal = Modal.Show<ProductModal.Create>("Create Product");
+        await modal.Result;
+        await OnInitializedAsync();
+    }
+
+    protected async Task Delete(int id) {
+        await _ProductApi.DeleteProdcutAsync(id);
+        await OnInitializedAsync();
+    }
+}

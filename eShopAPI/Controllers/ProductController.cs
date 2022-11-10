@@ -9,7 +9,7 @@ namespace eShopAPI.Controllers
     [Route("api/[controller]")]
     public class ProductController : Controller
     {
-        private readonly IProduct _Product;
+        private readonly IProduct  _Product;
 
         public ProductController(IProduct product)
         {
@@ -22,20 +22,27 @@ namespace eShopAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult Index()
-        {
-            try
-            {
-                var list = _Product.GetProductAPI();
+        public List<Product> GetItems() => _Product.GetProducts();
 
-                if (list is null)
-                {
-                    return NotFound();
-                }
-                return Ok(list);
+        /// <summary>
+        /// GET: Find product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("item/{id}")]
+        public IActionResult GetItemById(int id)
+        {
+            var prop = _Product.FindProductById(id);
+
+            if (prop == null)
+            {
+                return NotFound();
             }
-            catch (Exception) { return StatusCode(400); }
+
+            return Ok(prop);
         }
+
 
         /// <summary>
         /// POST: Creates a product
@@ -43,12 +50,13 @@ namespace eShopAPI.Controllers
         /// <param name="product"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Create(Product product)
+        [Route("create")]
+        public IActionResult Create(Product product)
         {
             try
             {
-                _Product.AddEntity(product);
-                return Ok($"Product {product.Name} has been created...");
+                product = _Product.AddProduct(product);
+                return Created($"/api/{product.ProductId}", product);
             }
             catch (Exception) { return StatusCode(400); }
         }
@@ -59,7 +67,8 @@ namespace eShopAPI.Controllers
         /// <param name="product"></param>
         /// <returns></returns>
         [HttpPut]
-        public ActionResult Edit(Product product)
+        [Route("update")]
+        public IActionResult Update(Product product)
         {
             if (product.ProductId == 0)
                 return StatusCode(StatusCodes.Status500InternalServerError, "Id is null or 0");
@@ -67,9 +76,9 @@ namespace eShopAPI.Controllers
             try
             {
                 _Product.UpdateEntit(product);
-                return Ok($"Product {product.Name} has been updated...");
+                return Accepted($"item({product.ProductId}", product);
             }
-            catch (Exception) { return StatusCode(400); }
+            catch (Exception) { return NotFound(); }
         }
 
         /// <summary>
@@ -78,6 +87,7 @@ namespace eShopAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
+        [Route("delete")]
         public ActionResult Delete(int id)
         {
             if (id == 0)

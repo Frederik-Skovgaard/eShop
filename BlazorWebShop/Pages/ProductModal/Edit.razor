@@ -1,0 +1,62 @@
+﻿@using Microsoft.Extensions.Logging
+@using Blazored.Modal;
+
+@inject ILogger<Create> Logger
+
+@inject BlazorWebShop.Services.IProductAPI _ProductService
+@inject BlazorWebShop.Services.ITypesAPI _TypesService
+
+
+<EditForm Model="@Item" OnValidSubmit="@HandleValidSubmitAsync">
+    <DataAnnotationsValidator />
+
+    <label>Name</label>
+    <InputText class="form-control" id="Name" @bind-Value="Item.Name" />
+    <ValidationMessage For="() => Item.Name" />
+
+    <br />
+    <label>Price    </label>
+    <InputNumber class="form-control" id="Price" @bind-Value="Item.Price" />
+    <ValidationMessage For="() => Item.Price" />
+
+    <br />
+    <label>Brand</label>
+    <InputText class="form-control" id="Brand" @bind-Value="Item.Brand" />
+    <ValidationMessage For="() => Item.Brand" />
+
+    <br />
+    <label>Type</label>
+    <InputSelect class="form-select" @bind-Value="Item.TypesId">
+        <option value="">Select Type</option>
+        @foreach (var item in TypesList)
+        {
+            <option value="@item.TypesId">@item.Name</option>
+        }
+    </InputSelect>
+
+    <br />
+    <button class="btn btn-lg btn-primary" type="submit">Submit</button>
+</EditForm>
+
+@code {
+    private Product Item = new();
+    private List<Types> TypesList = new();
+
+    [Parameter] public int ID { get; set; }
+
+    [CascadingParameter] private BlazoredModalInstance blazorModalInstance { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Item = await _ProductService.GetProductAsync(ID);
+        TypesList = await _TypesService.GetTypesAsync();
+    }
+
+    protected async void HandleValidSubmitAsync()
+    {
+        Logger.LogInformation("HandleValidSubmitAsync called");
+
+        Product newitem = await _ProductService.UpdateProductAsync(Item);
+        blazorModalInstance.CloseAsync();
+    }
+}

@@ -1,0 +1,113 @@
+﻿@using Microsoft.Extensions.Logging
+@using Blazored.Modal;
+
+@inject HttpClient Http
+@inject ILogger<Create> Logger
+
+@inject BlazorWebShop.Services.IProductAPI _ProductService
+@inject BlazorWebShop.Services.ITypesAPI _TypesService
+
+<EditForm Model="@Item" OnValidSubmit="@HandleValidSubmitAsync">
+    <DataAnnotationsValidator />
+
+    <label>Name</label>
+    <InputText class="form-control" id="Name" @bind-Value="Item.Name" />
+    <ValidationMessage For="() => Item.Name" />
+
+    <br />
+    <label>Price    </label>
+    <InputNumber class="form-control" id="Price" @bind-Value="Item.Price" />
+    <ValidationMessage For="() => Item.Price" />
+
+    <br />
+    <label>Brand</label>
+    <InputText class="form-control" id="Brand" @bind-Value="Item.Brand" />
+    <ValidationMessage For="() => Item.Brand" />
+
+    <br />
+    <label>Type</label>
+    <InputSelect class="form-select" @bind-Value="Item.TypesId">
+        <option value="">Select Type</option>
+        @foreach (var item in TypesList)
+        {
+            <option value="@item.TypesId">@item.Name</option>
+        }
+    </InputSelect>
+
+    <br />
+    <div class="input-group">
+        <div class="custom-file">
+            <InputFile class="custom-file-input" multiple OnChange="OnChange" accept="image/png, image/jpeg, image/gif" id="inputFile" />
+            <label class="custom-file-label" for="inputFile">Choose file</label>
+        </div>
+        <div class="input-group-append">
+            <button class="btn btn-success" @onclick="Upload" disabled="@isDisabled">Upload</button>
+        </div>
+    </div>
+
+    @foreach (var item in filesBase64)
+    {
+        <img src="data:@item.contentType;base64,@item.base64data" />
+    }
+
+    <br />
+    <button class="btn btn-lg btn-primary" type="submit">Submit</button>
+</EditForm>
+
+
+
+@code {
+    private List<ImageFile> filesBase64 = new List<ImageFile>();
+    private string message = "InputFile";
+    private bool isDisabled = false;
+
+    private Product Item = new();
+    private List<Types> TypesList = new();
+
+
+    [CascadingParameter] private BlazoredModalInstance blazorModalInstance { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        TypesList = await _TypesService.GetTypesAsync();
+    }
+
+    protected async void HandleValidSubmitAsync()
+    {
+        Logger.LogInformation("HandleValidSubmitAsync called");
+
+        Product newitem = await _ProductService.CreateProductAsync(Item);
+        blazorModalInstance.CloseAsync();
+    }
+
+    protected async Task OnChange(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(); // get the files selected by the users
+        foreach (var file in files)
+        {
+            var resizedFile = await file.RequestImageFileAsync(file.ContentType, 640, 480); // resize the image file
+            var buf = new byte[resizedFile.Size]; // allocate a buffer to fill with the file's data
+            using (var stream = resizedFile.OpenReadStream())
+            {
+                await stream.ReadAsync(buf); // copy the stream to the buffer
+            }
+            filesBase64.Add(new ImageFile { base64data = Convert.ToBase64String(buf), contentType = file.ContentType, fileName = file.Name }); // convert to a base64 string!!
+        }
+        message = "Click UPLOAD to continue";
+    }
+
+    protected async Task Upload()
+    {
+        isDisabled = true;
+        using (var msg = await _ProductService.UploadImage(filesBase64))
+        {
+            
+            isDisabled = false;
+            if (msg.IsSuccessStatusCode)
+            {
+                message = $"{filesBase64.Count} files uploaded";
+                filesBase64.Clear();
+            }
+        }
+    }    
+}

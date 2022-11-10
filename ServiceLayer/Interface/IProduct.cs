@@ -11,6 +11,7 @@ namespace ServiceLayer.Interface
     public interface IProduct
     {
         //CRUD
+        Product AddProduct(Product prop);
         void AddEntity<T>(T entry) where T : class;
         void UpdateEntit<T>(T entry) where T : class;
 
