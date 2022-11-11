@@ -21,7 +21,7 @@ namespace eShopAPI.Controllers
             foreach (var file in files)
             {
                 var buf = Convert.FromBase64String(file.base64data);
-                await System.IO.File.WriteAllBytesAsync(env.ContentRootPath + Path.DirectorySeparatorChar + Guid.NewGuid().ToString("N") + "-" + file.fileName, buf);
+                await System.IO.File.WriteAllBytesAsync("C:\\Users\\frede\\source\\repos\\eShop\\BlazorWebShop\\wwwroot\\Images" + Path.DirectorySeparatorChar + file.fileName, buf);
             }
         }
     }

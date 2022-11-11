@@ -22,5 +22,19 @@ namespace eShopAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         public List<Types> GetItems() => _Type.GetTypes();
+
+        [HttpGet]
+        [Route("item/{id}")]
+        public IActionResult GetItemById(int id)
+        {
+            var prop = _Type.FindTpyeById(id);
+
+            if (prop == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(prop);
+        }
     }
 }

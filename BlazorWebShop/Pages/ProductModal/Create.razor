@@ -1,6 +1,8 @@
 ﻿@using Microsoft.Extensions.Logging
 @using Blazored.Modal;
 
+
+@inject IToastService toastService
 @inject HttpClient Http
 @inject ILogger<Create> Logger
 
@@ -40,9 +42,6 @@
             <InputFile class="custom-file-input" multiple OnChange="OnChange" accept="image/png, image/jpeg, image/gif" id="inputFile" />
             <label class="custom-file-label" for="inputFile">Choose file</label>
         </div>
-        <div class="input-group-append">
-            <button class="btn btn-success" @onclick="Upload" disabled="@isDisabled">Upload</button>
-        </div>
     </div>
 
     @foreach (var item in filesBase64)
@@ -75,8 +74,12 @@
     protected async void HandleValidSubmitAsync()
     {
         Logger.LogInformation("HandleValidSubmitAsync called");
+        Item.ImageUrl = $"Images/{filesBase64.FirstOrDefault().fileName}";
 
         Product newitem = await _ProductService.CreateProductAsync(Item);
+        await Upload();
+
+        toastService.ShowSuccess("I'm a SUCCESS message with a custom title", "Congratulations!");
         blazorModalInstance.CloseAsync();
     }
 

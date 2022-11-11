@@ -5,6 +5,7 @@
 
 @inject BlazorWebShop.Services.IProductAPI _ProductService
 @inject BlazorWebShop.Services.ITypesAPI _TypesService
+@inject IToastService toastService
 
 
 <EditForm Model="@Item" OnValidSubmit="@HandleValidSubmitAsync">
@@ -35,10 +36,26 @@
     </InputSelect>
 
     <br />
+    <div class="input-group">
+        <div class="custom-file">
+            <InputFile class="custom-file-input" multiple OnChange="OnChange" accept="image/png, image/jpeg, image/gif" id="inputFile" />
+            <label class="custom-file-label" for="inputFile">Choose file</label>
+        </div>
+    </div>
+
+    @foreach (var item in filesBase64)
+    {
+        <img src="data:@item.contentType;base64,@item.base64data" />
+    }
+    <br />
     <button class="btn btn-lg btn-primary" type="submit">Submit</button>
 </EditForm>
 
 @code {
+    private List<ImageFile> filesBase64 = new List<ImageFile>();
+    private string message = "InputFile";
+    private bool isDisabled = false;
+
     private Product Item = new();
     private List<Types> TypesList = new();
 
@@ -56,7 +73,43 @@
     {
         Logger.LogInformation("HandleValidSubmitAsync called");
 
+        filesBase64.FirstOrDefault().fileName = Path.GetFileName(Item.ImageUrl);
+
         Product newitem = await _ProductService.UpdateProductAsync(Item);
+        await Upload();
+
+        toastService.ShowSuccess("I'm a SUCCESS message with a custom title", "Congratulations!");
         blazorModalInstance.CloseAsync();
+    }
+
+    protected async Task OnChange(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(); // get the files selected by the users
+        foreach (var file in files)
+        {
+            var resizedFile = await file.RequestImageFileAsync(file.ContentType, 640, 480); // resize the image file
+            var buf = new byte[resizedFile.Size]; // allocate a buffer to fill with the file's data
+            using (var stream = resizedFile.OpenReadStream())
+            {
+                await stream.ReadAsync(buf); // copy the stream to the buffer
+            }
+            filesBase64.Add(new ImageFile { base64data = Convert.ToBase64String(buf), contentType = file.ContentType, fileName = file.Name }); // convert to a base64 string!!
+        }
+        message = "Click UPLOAD to continue";
+    }
+
+    protected async Task Upload()
+    {
+        isDisabled = true;
+        using (var msg = await _ProductService.UploadImage(filesBase64))
+        {
+
+            isDisabled = false;
+            if (msg.IsSuccessStatusCode)
+            {
+                message = $"{filesBase64.Count} files uploaded";
+                filesBase64.Clear();
+            }
+        }
     }
 }

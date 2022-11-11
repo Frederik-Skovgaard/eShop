@@ -1,4 +1,13 @@
-﻿<label>Name</label>
+﻿@inject BlazorWebShop.Services.ITypesAPI _TypesService
+
+<style>
+    label {
+        font-weight: bold;
+        font-size: 20px;
+    }
+</style>
+
+<label>Name</label>
 <p>@Item.Name</p>
 
 <br />
@@ -11,8 +20,18 @@
 
 <br />
 <label>Type</label>
-<p>@Item.TypesId</p>
+<p>@Types.Name</p>
+
+<label>Image</label>
+<br />
+<img style="height: 200px;" src="@Item.ImageUrl" />
 
 @code {
     [Parameter] public Product Item { get; set; }
+    private Types Types = new Types();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Types = await _TypesService.GetTypeAsync(Item.TypesId);
+    }
 }
