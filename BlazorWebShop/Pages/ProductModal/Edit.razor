@@ -73,10 +73,17 @@
     {
         Logger.LogInformation("HandleValidSubmitAsync called");
 
-        filesBase64.FirstOrDefault().fileName = Path.GetFileName(Item.ImageUrl);
+        if (filesBase64.Count != 0)
+        {
+            filesBase64.FirstOrDefault().fileName = Path.GetFileName(Item.ImageUrl);
+        }
 
         Product newitem = await _ProductService.UpdateProductAsync(Item);
-        await Upload();
+
+        if (filesBase64.Count != 0)
+        {
+            await Upload();
+        }
 
         toastService.ShowSuccess("I'm a SUCCESS message with a custom title", "Congratulations!");
         blazorModalInstance.CloseAsync();
