@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopAPI", "eShopAPI\eShopA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWebShop", "BlazorWebShop\BlazorWebShop.csproj", "{0EDEAF87-8CD4-41B6-8941-E42640C3415C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopUnitTest", "eShopUnitTest\eShopUnitTest.csproj", "{35B4EA30-0D8D-4952-A454-FC1BFF454359}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{958B3F68-200C-409A-B3AC-1C6E0809ECCE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{0EDEAF87-8CD4-41B6-8941-E42640C3415C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EDEAF87-8CD4-41B6-8941-E42640C3415C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EDEAF87-8CD4-41B6-8941-E42640C3415C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35B4EA30-0D8D-4952-A454-FC1BFF454359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35B4EA30-0D8D-4952-A454-FC1BFF454359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35B4EA30-0D8D-4952-A454-FC1BFF454359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35B4EA30-0D8D-4952-A454-FC1BFF454359}.Release|Any CPU.Build.0 = Release|Any CPU
+		{958B3F68-200C-409A-B3AC-1C6E0809ECCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{958B3F68-200C-409A-B3AC-1C6E0809ECCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{958B3F68-200C-409A-B3AC-1C6E0809ECCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{958B3F68-200C-409A-B3AC-1C6E0809ECCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

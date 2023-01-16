@@ -4,7 +4,7 @@ using DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.Interface;
-using ServiceLayer.Repository;
+using ServiceLayer.Service;
 
 namespace UnitTest
 {
@@ -32,6 +32,26 @@ namespace UnitTest
             //ACT
             repo.AddEntity(p);
 
+
+            //ASSERT
+            Product product = repo.FindProductById(p.ProductId);
+            Assert.Equal(p, product);
+        }
+
+        [Fact]
+        public void UpdateProduct()
+        {
+            //ARRANGE
+            Product p = new()
+            {
+                Name = "Tier 3 sub",
+                Brand = "Twitch",
+                Price = 20.99M,
+                TypesId = 1
+            };
+
+            //ACT
+            repo.UpdateEntit(p);
 
             //ASSERT
             Product product = repo.FindProductById(p.ProductId);
